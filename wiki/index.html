@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>바로가기</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1d2433;--sub:#5b6474;--line:#e3e0d9;--ok:#1f8a5b;--warn:#a16207;--off:#6b7280;--accent:#3d5afe;--accent-ink:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--card:#1d2128;--ink:#e8eaee;--sub:#a3abb8;--line:#2c313a;--ok:#4ade80;--warn:#fbbf24;--off:#9ca3af;--accent:#8ea2ff;--accent-ink:#10131a}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+main{max-width:600px;margin:0 auto;padding:40px 16px 56px}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--sub);font-size:13.5px;margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 18px}
+.card.pad{padding:18px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.name{flex:1;min-width:0}
+.name b{display:block;font-size:15px}
+.name small{color:var(--sub);font-size:12.5px;word-break:break-all}
+.badge{font-size:12px;font-weight:700;padding:1px 9px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.ok{color:var(--ok)}.off{color:var(--off)}.warn{color:var(--warn)}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:10px;padding:8px 15px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--accent)}
+.msg{font-size:16px;margin:0 0 10px}
+.hint{color:var(--sub);font-size:13px;margin:12px 0 0}
+.foot{color:var(--sub);font-size:12.5px;margin:14px 2px 0}
+input{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin-top:6px}
+.spin{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;display:inline-block;vertical-align:-3px;margin-right:8px;animation:s .8s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+kbd{font:12px/1 ui-monospace,Consolas,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:2px 5px;background:var(--card)}
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"><p class="msg"><span class="spin"></span>현재 주소를 확인하는 중…</p></main>
+<noscript><p style="text-align:center">JavaScript 를 켜야 이동할 수 있어요.</p></noscript>
+<script>
+(function(){
+'use strict';
+// 고정 링크 중계 — 이 페이지는 주소가 바뀌는 PC 의 서비스로 가는 '고정 입구'다.
+// 현재 주소는 data 브랜치 where.json 에 암호화돼 있고, 키는 링크의 #k= 조각(서버로 안 감)과 이 브라우저에만 있다.
+var CFG={owner:'seohyunbum',repo:'go',branch:'data',base:'/go/',ids:["wiki", "wiki-http", "console", "adk", "inline"]};
+var KEY_STORE='go_relay_k:'+CFG.repo;
+var STALE_SEC=25*60;              // PC 가 10분마다 갱신한다 — 25분 넘게 소식이 없으면 꺼졌거나 절전일 수 있다
+var app=document.getElementById('app');
+var enc=new TextEncoder();
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function hashParams(){return new URLSearchParams(location.hash.replace(/^#/,''));}
+function readKey(){
+  var k=(hashParams().get('k')||'').trim();
+  if(k){try{localStorage.setItem(KEY_STORE,k);}catch(_){} return k;}
+  try{return localStorage.getItem(KEY_STORE)||'';}catch(_){return '';}
+}
+function route(){
+  var p=location.pathname;
+  p=p.indexOf(CFG.base)===0?p.slice(CFG.base.length):p.replace(/^\/+/,'');
+  var parts=p.split('/'), id=parts[0];
+  if(id&&CFG.ids.indexOf(id)>=0){
+    var tail=parts.slice(1).join('/');
+    if(tail==='index.html'||tail==='404.html')tail='';
+    return {id:id,tail:tail};
+  }
+  return {id:'',tail:''};
+}
+/*<decrypt>*/
+function b64uBytes(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+async function relayDecrypt(doc,key){
+  var te=new TextEncoder(), raw=b64uBytes(key), prefix=te.encode('go-relay/v1|');
+  var material=new Uint8Array(prefix.length+raw.length); material.set(prefix); material.set(raw,prefix.length);
+  var digest=await crypto.subtle.digest('SHA-256',material);
+  var k=await crypto.subtle.importKey('raw',digest,{name:'AES-GCM'},false,['decrypt']);
+  var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64uBytes(doc.iv),additionalData:te.encode('go-relay/v1')},k,b64uBytes(doc.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+/*</decrypt>*/
+async function getJSON(url,headers){
+  var r=await fetch(url,{cache:'no-store',headers:headers||{}});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r.json();
+}
+function ageSec(d){return Date.now()/1000-((d&&d.ts)||0);}
+async function load(key){
+  var base=CFG.owner+'/'+CFG.repo;
+  var raw='https://raw.githubusercontent.com/'+base+'/'+CFG.branch+'/where.json?t='+Date.now();
+  var api='https://api.github.com/repos/'+base+'/contents/where.json?ref='+CFG.branch;
+  var data=null, err=null;
+  try{data=await relayDecrypt(await getJSON(raw),key);}catch(e){err=e;}
+  // raw 는 최대 5분 캐시된다 — 낡아 보이면 API(캐시 없음)로 한 번 더 확인
+  if(!data||ageSec(data)>15*60){
+    try{var d2=await relayDecrypt(await getJSON(api,{'Accept':'application/vnd.github.raw'}),key);if(!data||d2.ts>data.ts)data=d2;}
+    catch(e){err=err||e;}
+  }
+  if(!data)throw err||new Error('no data');
+  return data;
+}
+function when(ts){
+  var s=Math.max(0,Date.now()/1000-ts), t=new Date(ts*1000);
+  var hm=t.toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  var ago=s<90?'방금':s<3600?Math.round(s/60)+'분 전':s<86400?Math.round(s/3600)+'시간 전':Math.round(s/86400)+'일 전';
+  return ago+' ('+hm+')';
+}
+var WHERE={office:'사내망',vpn:'회사 VPN',away:'사내망 밖'};
+function target(svc,tail){
+  var u=new URL(svc.url);
+  if(tail)u.pathname=u.pathname.replace(/\/$/,'')+'/'+tail;
+  u.search=location.search;
+  return u.href;
+}
+function svcState(data,svc){
+  if(data.state==='away'||!svc.url)return {cls:'off',txt:'열 수 없음'};
+  if(!svc.up)return {cls:'off',txt:'꺼져 있음'};
+  if(ageSec(data)>STALE_SEC)return {cls:'warn',txt:'확인 지연'};
+  return {cls:'ok',txt:'열림'};
+}
+function certHint(svc){
+  return svc&&/^https:/.test(svc.url||'')?'<p class="hint">처음 여는 주소면 “연결이 비공개로 설정되어 있지 않습니다” 경고가 떠요 → <b>고급</b> → <b>계속</b>을 한 번 누르면 됩니다(사내 자체 인증서).</p>':'';
+}
+function foot(data){return '<p class="foot">PC 위치: '+esc(WHERE[data.state]||data.state)+' · 마지막 확인 '+esc(when(data.ts))+'</p>';}
+function listView(data,key){
+  var rows=(data.services||[]).map(function(s){
+    var st=svcState(data,s);
+    return '<div class="row"><div class="name"><b>'+esc(s.label)+'</b><small>'+esc(s.url||'')+'</small></div>'+
+      '<span class="badge '+st.cls+'">'+st.txt+'</span>'+
+      '<a class="btn ghost" href="'+esc(CFG.base+s.id+'/#k='+encodeURIComponent(key))+'">열기</a></div>';
+  }).join('');
+  var lead=data.state==='away'?'<p class="msg">PC가 지금 사내망 밖에 있어 열 수 없어요.</p>':
+    ageSec(data)>STALE_SEC?'<p class="msg">PC 소식이 끊겼어요 — 꺼졌거나 절전 중일 수 있어요.</p>':'';
+  app.innerHTML='<h1>바로가기</h1><p class="sub">이 PC 주소가 바뀌어도 여기서 현재 주소로 열립니다. 이 페이지를 즐겨찾기 해 두세요.</p>'+lead+
+    '<div class="card">'+rows+'</div>'+foot(data);
+}
+function stopView(data,svc,msg,url){
+  app.innerHTML='<h1>'+esc(svc.label)+'</h1><p class="msg">'+msg+'</p>'+
+    (url?'<p><a class="btn" href="'+esc(url)+'">그래도 열기</a> <a class="btn ghost" href="'+esc(CFG.base)+'">전체 목록</a></p>':'<p><a class="btn ghost" href="'+esc(CFG.base)+'">전체 목록</a></p>')+
+    foot(data);
+}
+function setupView(data,svc,key,url){
+  // 즐겨찾기 안내 — 조각에서 setup 만 지우고 키는 남긴다(이 주소를 그대로 즐겨찾기 하면 된다)
+  try{history.replaceState(null,'',location.pathname+location.search+'#k='+encodeURIComponent(key));}catch(_){}
+  var st=svcState(data,svc);
+  app.innerHTML='<h1>'+esc(svc.label)+' 고정 링크</h1>'+
+    '<div class="card pad"><p class="msg">지금 이 페이지를 <b>즐겨찾기</b>(<kbd>Ctrl</kbd>+<kbd>D</kbd>) 해 두세요.</p>'+
+    '<p class="hint" style="margin-top:0">앞으로 이 PC 주소가 사무실·VPN 사이에서 바뀌어도 이 즐겨찾기 하나로 열립니다.</p>'+
+    '<p style="margin:16px 0 0"><a class="btn" href="'+esc(url||CFG.base)+'">지금 열기</a> <span class="badge '+st.cls+'">'+st.txt+'</span></p>'+certHint(svc)+'</div>'+foot(data);
+}
+function needKey(msg){
+  app.innerHTML='<h1>바로가기</h1><p class="sub">'+(msg||'처음 한 번은 팀에서 받은 고정 링크(주소 끝에 <b>#k=…</b>가 붙은 것)로 열어 주세요.')+'</p>'+
+    '<div class="card pad"><label for="kin">받은 링크 붙여넣기</label><input id="kin" autocomplete="off" spellcheck="false">'+
+    '<p style="margin:12px 0 0"><button class="btn" id="kgo" type="button">확인</button></p></div>';
+  document.getElementById('kgo').onclick=function(){
+    var v=document.getElementById('kin').value.trim(), m=v.match(/[#&]k=([A-Za-z0-9_-]+)/);
+    if(m)v=m[1];
+    if(!/^[A-Za-z0-9_-]{16,}$/.test(v))return;
+    try{localStorage.setItem(KEY_STORE,v);}catch(_){}
+    location.hash='k='+v; location.reload();
+  };
+}
+function fail(msg){app.innerHTML='<h1>바로가기</h1><p class="msg">'+msg+'</p>';}
+async function main(){
+  var r=route(), key=readKey();
+  if(!key)return needKey();
+  if(!(window.crypto&&crypto.subtle))return fail('이 브라우저에서는 주소를 풀 수 없어요. 최신 Chrome·Edge 로 열어 주세요.');
+  var data;
+  try{data=await load(key);}
+  catch(e){
+    if(e&&e.name==='OperationError')return needKey('키가 맞지 않아요 — 링크가 바뀌었을 수 있어요. 팀에서 새 고정 링크를 받아 붙여 넣어 주세요.');
+    return fail('현재 주소를 받아오지 못했어요. 인터넷(github.com) 접속을 확인하고 새로고침해 주세요.');
+  }
+  if(!r.id)return listView(data,key);
+  var svc=(data.services||[]).filter(function(s){return s.id===r.id;})[0];
+  if(!svc)return listView(data,key);
+  var url=svc.url?target(svc,r.tail):'';
+  if(hashParams().get('setup')==='1')return setupView(data,svc,key,url);
+  if(data.state==='away'||!url)return stopView(data,svc,'PC가 지금 사내망 밖에 있어 열 수 없어요. 사내망이나 VPN 에 다시 연결되면 자동으로 열립니다.','');
+  if(!svc.up)return stopView(data,svc,'지금 꺼져 있어요. PC에서 서비스가 다시 켜지면 열립니다.',url);
+  if(ageSec(data)>STALE_SEC)return stopView(data,svc,'PC 소식이 '+esc(when(data.ts))+' 이후 끊겼어요 — 꺼졌거나 절전 중일 수 있어요.',url);
+  app.innerHTML='<p class="msg"><span class="spin"></span>'+esc(svc.label)+' — 현재 주소로 이동하는 중…</p><p class="hint">'+esc(url)+'</p>';
+  location.replace(url);
+}
+// 주소창에서 #k= 만 바꿔 붙여 넣으면 페이지가 다시 읽히지 않는다 → 새로 연다
+window.addEventListener('hashchange',function(){location.reload();});
+main();
+})();
+</script>
+</body>
+</html>
