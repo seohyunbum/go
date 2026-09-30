@@ -5,51 +5,162 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
 <title>바로가기</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23a05f42'/%3E%3Cg fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' transform='translate(4 4)'%3E%3Cpath d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/%3E%3Cpath d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/%3E%3C/g%3E%3C/svg%3E">
 <style>
-:root{--bg:#f6f5f2;--card:#fff;--ink:#1d2433;--sub:#5b6474;--line:#e3e0d9;--ok:#1f8a5b;--warn:#a16207;--off:#6b7280;--accent:#3d5afe;--accent-ink:#fff}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--card:#1d2128;--ink:#e8eaee;--sub:#a3abb8;--line:#2c313a;--ok:#4ade80;--warn:#fbbf24;--off:#9ca3af;--accent:#8ea2ff;--accent-ink:#10131a}}
+:root{
+  --bg1:#fff2d9;--bg2:#faf0dc;--bg3:#e9f2e9;
+  --surface:#fffdf7;--surface2:#f6eddc;--line:#e6d9c3;
+  --ink:#4c4034;--muted:#7d7062;
+  --accent:#a05f42;--accent-deep:#874b35;--accent-ink:#fff;--accent-soft:#f6e3d6;
+  --ok:#3f7a63;--ok-bg:#e1eee6;--warn:#9a5f12;--warn-bg:#fbe9c8;--off:#857a6d;--off-bg:#efe7da;
+  --shadow:0 6px 15px -13px #5f482d9c,inset 0 1px 0 #fffef4;
+  --shadow-hover:0 11px 22px -15px #5f482daf,inset 0 1px 0 #fff;
+  --mono:"D2Coding",Consolas,ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg1:#241d16;--bg2:#1e1914;--bg3:#161b17;
+  --surface:#2b251d;--surface2:#352d23;--line:#43392c;
+  --ink:#f1e8da;--muted:#b9ab97;
+  --accent:#e2a27f;--accent-deep:#ecb697;--accent-ink:#2a1a10;--accent-soft:#3d2c21;
+  --ok:#8cc5a8;--ok-bg:#20342a;--warn:#e8b35c;--warn-bg:#3a2d15;--off:#a79a88;--off-bg:#312a21;
+  --shadow:0 8px 20px -14px #000c,inset 0 1px 0 #ffffff0d;
+  --shadow-hover:0 12px 26px -14px #000e,inset 0 1px 0 #ffffff14;
+}}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font:15px/1.6 system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif}
-main{max-width:600px;margin:0 auto;padding:40px 16px 56px}
-h1{font-size:20px;margin:0 0 4px}
-.sub{color:var(--sub);font-size:13.5px;margin:0 0 18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 18px}
-.card.pad{padding:18px}
-.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
-.row:first-child{border-top:0}
-.name{flex:1;min-width:0}
-.name b{display:block;font-size:15px}
-.name small{color:var(--sub);font-size:12.5px;word-break:break-all}
-.badge{font-size:12px;font-weight:700;padding:1px 9px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
-.ok{color:var(--ok)}.off{color:var(--off)}.warn{color:var(--warn)}
-.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:10px;padding:8px 15px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer;white-space:nowrap}
-.btn.ghost{background:transparent;color:var(--accent)}
-.msg{font-size:16px;margin:0 0 10px}
-.hint{color:var(--sub);font-size:13px;margin:12px 0 0}
-.foot{color:var(--sub);font-size:12.5px;margin:14px 2px 0}
-input{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin-top:6px}
-.spin{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;display:inline-block;vertical-align:-3px;margin-right:8px;animation:s .8s linear infinite}
+html,body{margin:0;min-height:100%}
+body{color:var(--ink);background:linear-gradient(170deg,var(--bg1) 0%,var(--bg2) 55%,var(--bg3) 100%) fixed;
+  font:15px/1.6 "Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+.wrap{max-width:640px;margin:0 auto;padding:44px 16px 56px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+svg{display:block}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.top{display:flex;align-items:center;gap:14px;margin:0 0 22px}
+.mark{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;color:#fff;
+  background:linear-gradient(145deg,#b87050,var(--accent-deep));box-shadow:0 10px 20px -12px #874b35cc}
+.mark .i{width:24px;height:24px;stroke-width:2.2}
+.top h1{margin:0;font-size:22px;line-height:1.25;font-weight:800;letter-spacing:-.02em}
+.top p{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+.toprow{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;margin:0 0 12px}
+.hint{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.hint .i{width:15px;height:15px;color:var(--accent)}
+.status{display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:0;padding:6px 12px 6px 10px;
+  border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:13px;color:var(--muted);box-shadow:var(--shadow)}
+.status b{color:var(--ink);font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--off);flex:none}
+.s-ok .dot{background:var(--ok);box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 55%,transparent);animation:pulse 2.4s infinite}
+.s-warn .dot{background:var(--warn)}
+@keyframes pulse{70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}
+.list{overflow:hidden}
+.svc{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 14px 14px 18px;
+  text-decoration:none;border-top:1px solid var(--line);transition:background .15s}
+.svc:first-child{border-top:0}
+.svc:hover{background:var(--surface2)}
+.svc b{display:block;font-size:15px;font-weight:700;line-height:1.35}
+.svc small{display:block;margin-top:2px;color:var(--muted);font:12px/1.4 var(--mono);letter-spacing:0}
+.go{display:inline-flex;align-items:center;gap:2px;height:32px;padding:0 10px 0 12px;border-radius:10px;
+  background:var(--accent-soft);color:var(--accent-deep);font-size:13px;font-weight:700;transition:transform .15s}
+.go .i{width:15px;height:15px;stroke-width:2.4}
+.svc:hover .go{transform:translateX(2px)}
+.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap;background:var(--off-bg);color:var(--off)}
+.p-ok{background:var(--ok-bg);color:var(--ok)}
+.p-warn{background:var(--warn-bg);color:var(--warn)}
+
+h2{margin:30px 2px 10px;font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0;padding:0;list-style:none}
+.steps li{padding:14px 14px 13px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow)}
+.n{display:inline-grid;place-items:center;width:22px;height:22px;margin-bottom:8px;border-radius:50%;
+  background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800}
+.steps b{display:block;font-size:14px;line-height:1.4}
+.steps span.d{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);line-height:1.45}
+.notes{margin:0;padding:6px 16px;list-style:none}
+.notes li{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.55;color:var(--muted)}
+.notes li:first-child{border-top:0}
+.notes .i{margin-top:2px;color:var(--accent)}
+.notes b{color:var(--ink);font-weight:700}
+kbd{display:inline-block;min-width:22px;padding:1px 6px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;
+  background:var(--surface);font:12px/1.5 var(--mono);text-align:center;color:var(--ink)}
+.foot{margin:18px 2px 0;font-size:12px;color:var(--muted)}
+
+.hero{padding:22px 22px 20px}
+.tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:3px 10px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent-deep);font-size:12px;font-weight:800}
+.tag .i{width:14px;height:14px}
+.hero h3{margin:0 0 6px;font-size:20px;line-height:1.35;font-weight:800;letter-spacing:-.02em}
+.hero p{margin:0;color:var(--muted);font-size:14px}
+.hero p.lead{color:var(--ink);font-size:16px;margin-bottom:4px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:12px;border:1px solid transparent;
+  font:inherit;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;transition:background .15s,border-color .15s}
+.btn .i{width:16px;height:16px;stroke-width:2.2}
+.primary{background:var(--accent);color:var(--accent-ink)}
+.primary:hover{background:var(--accent-deep)}
+.ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.ghost:hover{background:var(--surface2)}
+.stop{display:flex;gap:14px;padding:20px}
+.stop .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--off-bg);color:var(--off)}
+.stop.s-warn .ic{background:var(--warn-bg);color:var(--warn)}
+.stop h3{margin:1px 0 4px;font-size:17px;line-height:1.4}
+.stop p{margin:0;color:var(--muted);font-size:14px}
+label{display:block;margin-bottom:6px;font-size:13px;font-weight:700}
+input{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--ink);
+  font:14px var(--mono)}
+.loading{display:flex;align-items:center;gap:10px;padding:18px 20px;color:var(--muted)}
+.spin{width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:s .8s linear infinite;flex:none}
 @keyframes s{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.spin{animation:none}}
-kbd{font:12px/1 ui-monospace,Consolas,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:2px 5px;background:var(--card)}
+@media (prefers-reduced-motion:reduce){.spin,.s-ok .dot{animation:none}.svc:hover .go{transform:none}}
+@media (max-width:520px){
+  .wrap{padding-top:28px}
+  .steps{grid-template-columns:1fr}
+  .steps li{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:start}
+  .n{grid-row:span 2;margin:1px 0 0}
+  .svc{grid-template-columns:1fr auto;row-gap:8px}
+  .go{grid-column:2;grid-row:1 / span 2;padding:0 8px}
+  .go .t{display:none}
+  .pill{justify-self:start;grid-column:1}
+}
 </style>
 </head>
 <body>
-<main id="app" aria-live="polite"><p class="msg"><span class="spin"></span>현재 주소를 확인하는 중…</p></main>
+<main class="wrap">
+  <header class="top">
+    <span class="mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+    <div><h1>바로가기</h1><p>PC 주소가 바뀌어도 항상 여기서 열립니다</p></div>
+  </header>
+  <div id="app" aria-live="polite"><div class="card loading"><span class="spin"></span>현재 주소를 확인하는 중…</div></div>
+</main>
 <noscript><p style="text-align:center">JavaScript 를 켜야 이동할 수 있어요.</p></noscript>
 <script>
 (function(){
 'use strict';
 // 고정 링크 중계 — 이 페이지는 주소가 바뀌는 PC 의 서비스로 가는 '고정 입구'다.
 // 현재 주소는 data 브랜치 where.json 에 암호화돼 있고, 키는 링크의 #k= 조각(서버로 안 감)과 이 브라우저에만 있다.
+// 공개 파일이라 서비스 이름·사내 주소를 여기에 적지 않는다 — 전부 복호화한 데이터에서 그린다.
 var CFG={owner:'seohyunbum',repo:'go',branch:'data',base:'/go/',ids:["wiki", "wiki-http", "console", "adk", "inline"]};
 var KEY_STORE='go_relay_k:'+CFG.repo;
 var STALE_SEC=25*60;              // PC 가 10분마다 갱신한다 — 25분 넘게 소식이 없으면 꺼졌거나 절전일 수 있다
 var app=document.getElementById('app');
-var enc=new TextEncoder();
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function svg(d,cls){return '<svg class="i'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg>';}
+var I={
+  chev:svg('<path d="m9 18 6-6-6-6"/>'),
+  open:svg('<path d="M7 7h10v10"/><path d="M7 17 17 7"/>'),
+  list:svg('<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>'),
+  bookmark:svg('<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>'),
+  lock:svg('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'),
+  layers:svg('<path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/>'),
+  signal:svg('<path d="M12 20h.01"/><path d="M8.5 16.4a5 5 0 0 1 7 0"/><path d="M5 12.9a10 10 0 0 1 14 0"/><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="m3 3 18 18"/>'),
+  key:svg('<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>'),
+  moon:svg('<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>'),
+  alert:svg('<circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>')
+};
 function hashParams(){return new URLSearchParams(location.hash.replace(/^#/,''));}
 function readKey(){
   var k=(hashParams().get('k')||'').trim();
@@ -98,12 +209,8 @@ async function load(key){
   if(!data)throw err||new Error('no data');
   return data;
 }
-function when(ts){
-  var s=Math.max(0,Date.now()/1000-ts), t=new Date(ts*1000);
-  var hm=t.toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  var ago=s<90?'방금':s<3600?Math.round(s/60)+'분 전':s<86400?Math.round(s/3600)+'시간 전':Math.round(s/86400)+'일 전';
-  return ago+' ('+hm+')';
-}
+function ago(ts){var s=Math.max(0,Date.now()/1000-ts);return s<90?'방금':s<3600?Math.round(s/60)+'분 전':s<86400?Math.round(s/3600)+'시간 전':Math.round(s/86400)+'일 전';}
+function stamp(ts){return new Date(ts*1000).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});}
 var WHERE={office:'사내망',vpn:'회사 VPN',away:'사내망 밖'};
 function target(svc,tail){
   var u=new URL(svc.url);
@@ -117,40 +224,72 @@ function svcState(data,svc){
   if(ageSec(data)>STALE_SEC)return {cls:'warn',txt:'확인 지연'};
   return {cls:'ok',txt:'열림'};
 }
-function certHint(svc){
-  return svc&&/^https:/.test(svc.url||'')?'<p class="hint">처음 여는 주소면 “연결이 비공개로 설정되어 있지 않습니다” 경고가 떠요 → <b>고급</b> → <b>계속</b>을 한 번 누르면 됩니다(사내 자체 인증서).</p>':'';
+function statusHtml(data,hint){
+  return '<div class="toprow">'+statusPill(data)+(hint?'<span class="hint">'+I.bookmark+'즐겨찾기 <kbd>Ctrl</kbd> + <kbd>D</kbd></span>':'')+'</div>';
 }
-function foot(data){return '<p class="foot">PC 위치: '+esc(WHERE[data.state]||data.state)+' · 마지막 확인 '+esc(when(data.ts))+'</p>';}
+function statusPill(data){
+  var stale=ageSec(data)>STALE_SEC, seen=esc(ago(data.ts))+' 확인';
+  if(data.state==='away')return '<div class="status"><span class="dot"></span><b>PC가 사내망 밖에 있어요</b><span>· '+seen+'</span></div>';
+  var w=esc(WHERE[data.state]||data.state);
+  if(stale)return '<div class="status s-warn"><span class="dot"></span><b>PC 소식이 끊겼어요</b><span>· '+w+' · '+seen+'</span></div>';
+  return '<div class="status s-ok"><span class="dot"></span><b>연결됨</b><span>· '+w+' · '+seen+'</span></div>';
+}
+var CERT_NOTE='<li>'+I.lock+'<span><b>처음 열 때 인증서 경고가 뜨면</b> 「고급」 → 「계속」을 눌러 주세요. 사내 자체 인증서라 정상이에요.</span></li>';
+var STORE_NOTE='<li>'+I.layers+'<span><b>대화 기록·To-do는 주소마다 따로 저장돼요.</b> PC가 외부에 있을 땐 이전 기록이 안 보일 수 있지만 지워진 건 아니에요.</span></li>';
+function guideHtml(){
+  return '<h2>처음 오셨나요?</h2>'+
+    '<ol class="steps">'+
+      '<li><span class="n">1</span><b>이 페이지를 즐겨찾기</b><span class="d"><kbd>Ctrl</kbd> + <kbd>D</kbd></span></li>'+
+      '<li><span class="n">2</span><b>서비스 옆 「열기」</b><span class="d">그때의 PC 주소로 바로 연결돼요</span></li>'+
+      '<li><span class="n">3</span><b>다음부턴 즐겨찾기로</b><span class="d">주소가 바뀌어도 다시 설정할 필요 없어요</span></li>'+
+    '</ol>'+
+    '<h2>알아두기</h2>'+
+    '<ul class="notes card">'+CERT_NOTE+STORE_NOTE+
+      '<li>'+I.signal+'<span><b>열리지 않을 때</b> PC가 사내망 밖이거나 꺼져 있으면 시간 초과 대신 여기서 이유를 알려 드려요.</span></li>'+
+      '<li>'+I.key+'<span><b>링크 끝 <kbd>#k=…</kbd>는 열쇠예요.</b> 팀 밖으로 공유하지 마세요.</span></li>'+
+    '</ul>';
+}
 function listView(data,key){
+  document.title='바로가기';
   var rows=(data.services||[]).map(function(s){
-    var st=svcState(data,s);
-    return '<div class="row"><div class="name"><b>'+esc(s.label)+'</b><small>'+esc(s.url||'')+'</small></div>'+
-      '<span class="badge '+st.cls+'">'+st.txt+'</span>'+
-      '<a class="btn ghost" href="'+esc(CFG.base+s.id+'/#k='+encodeURIComponent(key))+'">열기</a></div>';
+    var st=svcState(data,s), addr=s.url?s.url.replace(/^https?:\/\//,'').replace(/\/$/,''):'—';
+    return '<a class="svc" href="'+esc(CFG.base+s.id+'/#k='+encodeURIComponent(key))+'">'+
+      '<span><b>'+esc(s.label)+'</b><small>'+esc(addr)+'</small></span>'+
+      '<span class="pill p-'+st.cls+'">'+st.txt+'</span>'+
+      '<span class="go"><span class="t">열기</span>'+I.chev+'</span></a>';
   }).join('');
-  var lead=data.state==='away'?'<p class="msg">PC가 지금 사내망 밖에 있어 열 수 없어요.</p>':
-    ageSec(data)>STALE_SEC?'<p class="msg">PC 소식이 끊겼어요 — 꺼졌거나 절전 중일 수 있어요.</p>':'';
-  app.innerHTML='<h1>바로가기</h1><p class="sub">이 PC 주소가 바뀌어도 여기서 현재 주소로 열립니다. 이 페이지를 즐겨찾기 해 두세요.</p>'+lead+
-    '<div class="card">'+rows+'</div>'+foot(data);
+  app.innerHTML=statusHtml(data,true)+'<nav class="card list" aria-label="서비스">'+rows+'</nav>'+guideHtml()+
+    '<p class="foot">마지막 확인 '+esc(stamp(data.ts))+'</p>';
 }
-function stopView(data,svc,msg,url){
-  app.innerHTML='<h1>'+esc(svc.label)+'</h1><p class="msg">'+msg+'</p>'+
-    (url?'<p><a class="btn" href="'+esc(url)+'">그래도 열기</a> <a class="btn ghost" href="'+esc(CFG.base)+'">전체 목록</a></p>':'<p><a class="btn ghost" href="'+esc(CFG.base)+'">전체 목록</a></p>')+
-    foot(data);
+function stopView(data,svc,cls,icon,title,msg,url){
+  document.title=svc.label+' · 바로가기';
+  app.innerHTML=statusHtml(data)+
+    '<div class="card"><div class="stop'+(cls?' '+cls:'')+'"><span class="ic">'+icon+'</span><div><h3>'+esc(svc.label)+' — '+title+'</h3><p>'+msg+'</p>'+
+    '<div class="actions">'+(url?'<a class="btn primary" href="'+esc(url)+'">'+I.open+'그래도 열기</a>':'')+
+    '<a class="btn ghost" href="'+esc(CFG.base)+'">'+I.list+'전체 목록</a></div></div></div></div>'+
+    '<p class="foot">마지막 확인 '+esc(stamp(data.ts))+'</p>';
 }
 function setupView(data,svc,key,url){
   // 즐겨찾기 안내 — 조각에서 setup 만 지우고 키는 남긴다(이 주소를 그대로 즐겨찾기 하면 된다)
   try{history.replaceState(null,'',location.pathname+location.search+'#k='+encodeURIComponent(key));}catch(_){}
+  document.title=svc.label+' · 바로가기';         // 즐겨찾기 이름이 이 제목으로 저장된다
   var st=svcState(data,svc);
-  app.innerHTML='<h1>'+esc(svc.label)+' 고정 링크</h1>'+
-    '<div class="card pad"><p class="msg">지금 이 페이지를 <b>즐겨찾기</b>(<kbd>Ctrl</kbd>+<kbd>D</kbd>) 해 두세요.</p>'+
-    '<p class="hint" style="margin-top:0">앞으로 이 PC 주소가 사무실·VPN 사이에서 바뀌어도 이 즐겨찾기 하나로 열립니다.</p>'+
-    '<p style="margin:16px 0 0"><a class="btn" href="'+esc(url||CFG.base)+'">지금 열기</a> <span class="badge '+st.cls+'">'+st.txt+'</span></p>'+certHint(svc)+'</div>'+foot(data);
+  app.innerHTML=statusHtml(data)+
+    '<section class="card hero"><span class="tag">'+I.bookmark+'즐겨찾기 안내</span>'+
+    '<h3>'+esc(svc.label)+' 고정 링크</h3>'+
+    '<p class="lead">지금 이 페이지를 <b>즐겨찾기</b> 해 두세요 &nbsp;<kbd>Ctrl</kbd> + <kbd>D</kbd></p>'+
+    '<p>PC 주소가 사무실과 외부(VPN) 사이에서 바뀌어도 이 즐겨찾기 하나로 열립니다.</p>'+
+    '<div class="actions"><a class="btn primary" href="'+esc(url||CFG.base)+'">'+I.open+'지금 열기</a>'+
+    '<a class="btn ghost" href="'+esc(CFG.base)+'">'+I.list+'전체 목록</a>'+
+    '<span class="pill p-'+st.cls+'">'+st.txt+'</span></div></section>'+
+    '<h2>알아두기</h2><ul class="notes card">'+CERT_NOTE+STORE_NOTE+'</ul>';
 }
 function needKey(msg){
-  app.innerHTML='<h1>바로가기</h1><p class="sub">'+(msg||'처음 한 번은 팀에서 받은 고정 링크(주소 끝에 <b>#k=…</b>가 붙은 것)로 열어 주세요.')+'</p>'+
-    '<div class="card pad"><label for="kin">받은 링크 붙여넣기</label><input id="kin" autocomplete="off" spellcheck="false">'+
-    '<p style="margin:12px 0 0"><button class="btn" id="kgo" type="button">확인</button></p></div>';
+  app.innerHTML='<div class="card"><div class="stop"><span class="ic">'+I.key+'</span><div style="flex:1;min-width:0">'+
+    '<h3>처음 한 번은 팀 링크로 열어 주세요</h3>'+
+    '<p>'+(msg||'팀에서 받은 고정 링크(주소 끝에 <kbd>#k=…</kbd>가 붙은 것)로 한 번 열면, 다음부터는 이 주소만으로 열려요.')+'</p>'+
+    '<div style="margin-top:16px"><label for="kin">받은 링크 붙여넣기</label><input id="kin" autocomplete="off" spellcheck="false" placeholder="https://…#k=…"></div>'+
+    '<div class="actions"><button class="btn primary" id="kgo" type="button">확인</button></div></div></div></div>';
   document.getElementById('kgo').onclick=function(){
     var v=document.getElementById('kin').value.trim(), m=v.match(/[#&]k=([A-Za-z0-9_-]+)/);
     if(m)v=m[1];
@@ -159,7 +298,7 @@ function needKey(msg){
     location.hash='k='+v; location.reload();
   };
 }
-function fail(msg){app.innerHTML='<h1>바로가기</h1><p class="msg">'+msg+'</p>';}
+function fail(msg){app.innerHTML='<div class="card"><div class="stop"><span class="ic">'+I.alert+'</span><div><h3>잠시 후 다시 시도해 주세요</h3><p>'+msg+'</p></div></div></div>';}
 async function main(){
   var r=route(), key=readKey();
   if(!key)return needKey();
@@ -175,10 +314,11 @@ async function main(){
   if(!svc)return listView(data,key);
   var url=svc.url?target(svc,r.tail):'';
   if(hashParams().get('setup')==='1')return setupView(data,svc,key,url);
-  if(data.state==='away'||!url)return stopView(data,svc,'PC가 지금 사내망 밖에 있어 열 수 없어요. 사내망이나 VPN 에 다시 연결되면 자동으로 열립니다.','');
-  if(!svc.up)return stopView(data,svc,'지금 꺼져 있어요. PC에서 서비스가 다시 켜지면 열립니다.',url);
-  if(ageSec(data)>STALE_SEC)return stopView(data,svc,'PC 소식이 '+esc(when(data.ts))+' 이후 끊겼어요 — 꺼졌거나 절전 중일 수 있어요.',url);
-  app.innerHTML='<p class="msg"><span class="spin"></span>'+esc(svc.label)+' — 현재 주소로 이동하는 중…</p><p class="hint">'+esc(url)+'</p>';
+  if(data.state==='away'||!url)return stopView(data,svc,'',I.signal,'지금은 열 수 없어요','PC가 사내망 밖에 있어요. 사내망이나 VPN 에 다시 연결되면 자동으로 열립니다.','');
+  if(!svc.up)return stopView(data,svc,'',I.moon,'꺼져 있어요','PC에서 서비스가 다시 켜지면 열립니다.',url);
+  if(ageSec(data)>STALE_SEC)return stopView(data,svc,'s-warn',I.moon,'PC 소식이 끊겼어요',esc(ago(data.ts))+' 이후 소식이 없어요 — 꺼졌거나 절전 중일 수 있어요.',url);
+  document.title=svc.label+' · 바로가기';
+  app.innerHTML='<div class="card loading"><span class="spin"></span><span><b style="color:var(--ink)">'+esc(svc.label)+'</b> — 현재 주소로 이동하는 중…</span></div>';
   location.replace(url);
 }
 // 주소창에서 #k= 만 바꿔 붙여 넣으면 페이지가 다시 읽히지 않는다 → 새로 연다
